@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Frontend</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f2f5;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .message {
+      font-size: 1.2rem;
+      color: #42b983;
+      margin-top: 1rem;
+    }
+    .error {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>Vue.js Frontend</h1>
+      <p class="message" v-if="message">{{ message }}</p>
+      <p class="message error" v-else-if="error">{{ error }}</p>
+      <p class="message" v-else>Loading...</p>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const message = ref('');
+        const error = ref('');
+
+        onMounted(async () => {
+          try {
+            const response = await fetch('/api');
+            message.value = await response.text();
+          } catch (err) {
+            error.value = 'Failed to reach backend: ' + err.message;
+          }
+        });
+
+        return { message, error };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
